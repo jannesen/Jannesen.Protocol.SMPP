@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C4B9E242-2CEB-492F-82FC-4C33711A5C94}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Jannesen.Protocol.SMPP</RootNamespace>
+    <AssemblyName>Jannesen.Protocol.SMPP</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <FileAlignment>512</FileAlignment>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>Jannesen.Protocol.SMPP.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Constant.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Internal\PduReader.cs" />
+    <Compile Include="Internal\PduWriter.cs" />
+    <Compile Include="Messages\SMPPBind.cs" />
+    <Compile Include="Messages\SMPPBindResp.cs" />
+    <Compile Include="Messages\SMPPDeliverSm.cs" />
+    <Compile Include="Messages\SMPPDeliverSmResp.cs" />
+    <Compile Include="Messages\SMPPEnquireLink.cs" />
+    <Compile Include="Messages\SMPPEnquireLinkResp.cs" />
+    <Compile Include="Messages\SMPPGenericNack.cs" />
+    <Compile Include="Messages\SMPPSubmitSm.cs" />
+    <Compile Include="Messages\SMPPSubmitSmResp.cs" />
+    <Compile Include="Messages\SMPPUnbind.cs" />
+    <Compile Include="Messages\SMPPUnbindResp.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="SMPPConnection.cs" />
+    <Compile Include="SMPPException.cs" />
+    <Compile Include="SMPPMessage.cs" />
+    <Compile Include="SMPPTLV.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Jannesen.Protocol.SMPP.snk" />
+    <None Include="LICENSE" />
+    <None Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Jannesen.Library.Task\Jannesen.Library.Task.csproj">
+      <Project>{b2939f95-88f6-4487-b7e4-acb78074a3bb}</Project>
+      <Name>Jannesen.Library.Task</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
