@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
@@ -139,8 +139,7 @@ namespace Jannesen.Protocol.SMPP
             set {
                 Uri url = new Uri(value);
 
-                switch(url.Scheme)
-                {
+                switch(url.Scheme) {
                 case "smpp":    Tls = false;    Port = 2775;    break;
                 case "smpps":   Tls = true;     Port = 2776;    break;
                 default:        throw new ArgumentException("Invalid connection schema.");
@@ -173,8 +172,7 @@ namespace Jannesen.Protocol.SMPP
             get {
                 lock(this)
                 {
-                    switch(_state)
-                    {
+                    switch(_state) {
                     case ConnectionState.StreamConnected:
                     case ConnectionState.Binding:
                     case ConnectionState.Connected:
@@ -344,8 +342,7 @@ namespace Jannesen.Protocol.SMPP
                     while (_isRunning) {
                         SMPPMessage message = await _recvMessage();
 
-                        switch (message.Command)
-                        {
+                        switch (message.Command) {
                         case CommandSet.EnquireLink:
                             _recvEnquireLink((SMPPEnquireLink)message);
                             break;
@@ -467,8 +464,7 @@ namespace Jannesen.Protocol.SMPP
             Debug.WriteLine("SMPPConnection: RecvMessage size=" + pduReader.CommandLength + " id=" + pduReader.CommandId + " status=" + pduReader.CommandStatus + " seq=" + pduReader.CommandSequence);
 #endif
             try {
-                switch (pduReader.CommandId)
-                {
+                switch (pduReader.CommandId) {
                 case CommandSet.GenericNack:            return new SMPPGenericNack(pduReader);
                 case CommandSet.BindReceiverResp:       return new SMPPBindResp(CommandSet.BindReceiverResp,    pduReader);
                 case CommandSet.BindTransceiverResp:    return new SMPPBindResp(CommandSet.BindTransceiverResp, pduReader);

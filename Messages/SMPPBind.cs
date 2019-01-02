@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Jannesen.Protocol.SMPP.Internal;
 
 namespace Jannesen.Protocol.SMPP
