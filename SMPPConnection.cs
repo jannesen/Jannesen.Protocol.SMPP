@@ -38,8 +38,7 @@ namespace Jannesen.Protocol.SMPP
             public          int                 ActiveCount
             {
                 get {
-                    lock(this)
-                    {
+                    lock(this) {
                         return base.Count;
                     }
                 }
@@ -47,8 +46,7 @@ namespace Jannesen.Protocol.SMPP
             public          bool                isBusy
             {
                 get {
-                    lock(this)
-                    {
+                    lock(this) {
                         return base.Count > 0;
                     }
                 }
@@ -58,8 +56,7 @@ namespace Jannesen.Protocol.SMPP
             {
                 ActiveRequest   sendingMessage = new ActiveRequest(message);
 
-                lock(this)
-                {
+                lock(this) {
                     base.Add(sendingMessage);
                 }
 
@@ -68,8 +65,7 @@ namespace Jannesen.Protocol.SMPP
 
             public          void                CompleteError(ActiveRequest sendingMessage, Exception err)
             {
-                lock(this)
-                {
+                lock(this) {
                     base.Remove(sendingMessage);
                 }
 
@@ -79,8 +75,7 @@ namespace Jannesen.Protocol.SMPP
             {
                 ActiveRequest sendingMessage;
 
-                lock(this)
-                {
+                lock(this) {
                     int     idx = _findMessage(message);
                     sendingMessage = base[idx];
                     base.RemoveAt(idx);
@@ -92,8 +87,7 @@ namespace Jannesen.Protocol.SMPP
             {
                 List<ActiveRequest> timeoutMessages = new List<ActiveRequest>();
 
-                lock(this)
-                {
+                lock(this) {
                     for (int i = 0 ; i < base.Count ; ++i) {
                         if (--base[i].TimeoutTicks <= 0) {
                             if (timeoutMessages == null)
@@ -170,8 +164,7 @@ namespace Jannesen.Protocol.SMPP
         private             bool                    _isRunning
         {
             get {
-                lock(this)
-                {
+                lock(this) {
                     switch(_state) {
                     case ConnectionState.StreamConnected:
                     case ConnectionState.Binding:
@@ -204,8 +197,7 @@ namespace Jannesen.Protocol.SMPP
         public  async       Task                    ConnectAsync()
         {
             // Init
-            lock (this)
-            {
+            lock (this) {
                 if (_state != ConnectionState.Closed)
                     throw new SMPPException("SMPPConnection busy.");
 
@@ -223,8 +215,7 @@ namespace Jannesen.Protocol.SMPP
 
                 using (new System.Threading.Timer((object state) =>
                                                     {
-                                                        lock(this)
-                                                        {
+                                                        lock(this) {
                                                             if (_state == ConnectionState.Connecting || _state == ConnectionState.SslHandshake) {
                                                                 error = new TimeoutException("Timeout");
                                                                 _tcpClient.Close();
@@ -246,8 +237,7 @@ namespace Jannesen.Protocol.SMPP
                     }
                 }
 
-                lock(this)
-                {
+                lock(this) {
                     if (error != null)
                         throw error;
 
@@ -257,8 +247,7 @@ namespace Jannesen.Protocol.SMPP
             }
             catch(Exception err) {
                 if (err is ObjectDisposedException || err is NullReferenceException) {
-                    lock(this)
-                    {
+                    lock(this) {
                         if (error != null)
                             err = error;
                         else
@@ -299,8 +288,7 @@ namespace Jannesen.Protocol.SMPP
         }
         public  async       Task                    StopAsync()
         {
-            lock(this)
-            {
+            lock(this) {
                 if (_state == ConnectionState.Closed)
                     return;
 
@@ -402,8 +390,7 @@ namespace Jannesen.Protocol.SMPP
                 }
             }
             catch(Exception err) {
-                lock(this)
-                {
+                lock(this) {
                     if (_state == ConnectionState.Connected) {
                         _setFailed(new SMPPException("EnquireLink failed", err));
 
@@ -495,8 +482,7 @@ namespace Jannesen.Protocol.SMPP
                 PduWriter writer = new PduWriter();
 
                 if ((message.Command & CommandSet.Response) == 0) {
-                    lock(this)
-                    {
+                    lock(this) {
                         message.Sequence = _sequence;
                         _sequence = (_sequence < 1000000000) ? _sequence + 1 : 1;
                     }
@@ -530,8 +516,7 @@ namespace Jannesen.Protocol.SMPP
         }
         private             void                    _closeTcpClient()
         {
-            lock(this)
-            {
+            lock(this) {
                 if (_tcpClient != null) {
                     try {
                         _tcpClient.Close();
@@ -549,8 +534,7 @@ namespace Jannesen.Protocol.SMPP
         {
             ConnectionState prevState = ConnectionState.Unknown;
 
-            lock(this)
-            {
+            lock(this) {
                 if (_state != newState) {
                     prevState = _state;
                     _state = newState;
@@ -574,8 +558,7 @@ namespace Jannesen.Protocol.SMPP
         {
             ConnectionState prevState = ConnectionState.Unknown;
 
-            lock(this)
-            {
+            lock(this) {
                 if (_state != ConnectionState.Failed) {
                     prevState = _state;
                     _error    = err;
@@ -595,8 +578,7 @@ namespace Jannesen.Protocol.SMPP
                     }
                 }
 
-                lock(this)
-                {
+                lock(this) {
                     _tcpClient.Close();
                 }
             }
