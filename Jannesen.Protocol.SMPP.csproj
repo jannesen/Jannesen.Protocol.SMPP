@@ -60,7 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Jannesen.Protocol.SMPP.snk" />
-    <None Include="LICENSE" />
+    <None Include="LICENSE.txt" />
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
