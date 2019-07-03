@@ -2,7 +2,7 @@
 
 This library implements a basis Short Message Peer-to-Peer protocol. It only implements sending SMS messages and receiving delivery reports.
 
-The library is complete async.
+The library is completly async.
 
 ## SMPPConnection
 
