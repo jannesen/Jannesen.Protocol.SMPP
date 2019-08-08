@@ -5,7 +5,7 @@ namespace Jannesen.Protocol.SMPP
 {
     public class SMPPBindResp: SMPPMessageWithOptional
     {
-        private                 CommandSet          _command;
+        private readonly        CommandSet          _command;
 
         public  override        CommandSet          Command                     { get { return _command; } }
         public                  string              SystemId                    { get; set; }

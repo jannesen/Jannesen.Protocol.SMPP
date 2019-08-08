@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Net.Sockets;
 using System.Net.Security;
@@ -128,7 +129,7 @@ namespace Jannesen.Protocol.SMPP
         public              string                  Url
         {
             get {
-                return (Tls ? "smpps://" : "smpp://") + Hostname + ":" + Port.ToString();
+                return (Tls ? "smpps://" : "smpp://") + Hostname + ":" + Port.ToString(CultureInfo.InvariantCulture);
             }
             set {
                 Uri url = new Uri(value);
@@ -156,9 +157,8 @@ namespace Jannesen.Protocol.SMPP
         private             TcpClient               _tcpClient;
         private             Stream                  _stream;
         private             TaskLock                _sendLock;
-        private             ActiveRequestList       _activeRequests;
+        private readonly    ActiveRequestList       _activeRequests;
         private             int                     _enquirePoll;
-        private             Task                    _comtask;
         private             Exception               _error;
 
         private             bool                    _isRunning
@@ -262,7 +262,7 @@ namespace Jannesen.Protocol.SMPP
             }
 
             // Start comtask
-            _comtask = _run();
+            Task _ = _run();
 
             // Bind
             try {
@@ -308,13 +308,12 @@ namespace Jannesen.Protocol.SMPP
                 Close();
             }
             catch(Exception err) {
-                throw _setFailed(err = new SMPPException("Unbind failed.", err));
+                throw _setFailed(new SMPPException("Unbind failed.", err));
             }
         }
         public              void                    Close()
         {
             _closeTcpClient();
-            _comtask   = null;
             _activeRequests.ConnectionDown();
             _sendLock.Dispose();
             _setState(ConnectionState.Closed);
@@ -325,8 +324,7 @@ namespace Jannesen.Protocol.SMPP
             try {
                 _enquirePoll = int.MaxValue;
 
-                using (new System.Threading.Timer(_poll, null, 1000, 1000))
-                {
+                using (new System.Threading.Timer(_poll, null, 1000, 1000)) {
                     while (_isRunning) {
                         SMPPMessage message = await _recvMessage();
 
@@ -406,11 +404,11 @@ namespace Jannesen.Protocol.SMPP
                 await OnDeliverSm(message);
             }
 
-            Task nop = _sendMessage(new SMPPDeliverSmResp(message.Sequence));
+            Task _ = _sendMessage(new SMPPDeliverSmResp(message.Sequence));
         }
         private             void                    _recvEnquireLink(SMPPEnquireLink message)
         {
-            Task nop = _sendMessage(new SMPPEnquireLinkResp(message.Sequence));
+            Task _ = _sendMessage(new SMPPEnquireLinkResp(message.Sequence));
         }
         private async       Task                    _recvUnbind(SMPPUnbind message)
         {
@@ -418,7 +416,7 @@ namespace Jannesen.Protocol.SMPP
             _state = ConnectionState.Stopped;
             await Task.Delay(250);
         }
-        public              Task<SMPPMessage>       _submitMessage(SMPPMessage message)
+        private             Task<SMPPMessage>       _submitMessage(SMPPMessage message)
         {
             ActiveRequest   sendingMessage = _activeRequests.AddMessage(message);
 
@@ -472,10 +470,9 @@ namespace Jannesen.Protocol.SMPP
                 throw new SMPPPDUException("Error while parsing received PDU command " + pduReader.CommandId.ToString() + ".", buf, err);
             }
         }
-        public  async       Task                    _sendMessage(SMPPMessage message)
+        private async       Task                    _sendMessage(SMPPMessage message)
         {
-            using (await _sendLock.Enter())
-            {
+            using (await _sendLock.Enter()) {
                 if (!_isRunning)
                     throw new SMPPException("Connection is down.");
 

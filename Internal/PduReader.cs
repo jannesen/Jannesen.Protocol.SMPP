@@ -4,8 +4,8 @@ namespace Jannesen.Protocol.SMPP.Internal
 {
     internal class PduReader
     {
-        private             byte[]          _data;
-        private             int             _length;
+        private readonly    byte[]          _data;
+        private readonly    int             _length;
         private             int             _offset;
 
         public              UInt32          CommandLength

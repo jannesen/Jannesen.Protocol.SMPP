@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Security.Permissions;
 
 namespace Jannesen.Protocol.SMPP
 {
@@ -10,6 +12,9 @@ namespace Jannesen.Protocol.SMPP
         {
         }
         public                              SMPPException(string message, Exception innerException): base(message, innerException)
+        {
+        }
+        protected                           SMPPException(SerializationInfo info, StreamingContext context): base(info, context)
         {
         }
 
@@ -31,10 +36,15 @@ namespace Jannesen.Protocol.SMPP
             PDU = pdu;
         }
 
+        protected                           SMPPPDUException(SerializationInfo info, StreamingContext context): base(info, context)
+        {
+            PDU = (byte[])info.GetValue(nameof(PDU), typeof(byte[]));
+        }
+        [SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter = true)]
         public  override    void            GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);
-            info.AddValue("PDU", PDU);
+            info.AddValue(nameof(PDU), PDU);
         }
 
         public  override    string          Source
