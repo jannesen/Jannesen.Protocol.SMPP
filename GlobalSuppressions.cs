@@ -6,6 +6,8 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Design",        "CA1056:Uri properties should not be strings")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Naming",        "CA1707:Identifiers should not contain underscores")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Naming",        "CA1714:Flags enums should have plural names")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Naming",        "CA1717:Only FlagsAttribute enums should have plural names")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Performance",   "CA1819:Properties should not return arrays")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability",   "CA2007:Consider calling ConfigureAwait on the awaited task")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability",   "CA2008:Do not create tasks without passing a TaskScheduler")]
