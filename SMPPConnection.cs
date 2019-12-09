@@ -463,7 +463,7 @@ namespace Jannesen.Protocol.SMPP
 
                 default:
                     throw new SMPPException("Invalid command.");
-                    //!! TODO set nack
+                    // TODO set nack
                 }
             }
             catch(Exception err) {
