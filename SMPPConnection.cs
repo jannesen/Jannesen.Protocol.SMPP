@@ -404,11 +404,11 @@ namespace Jannesen.Protocol.SMPP
                 await OnDeliverSm(message);
             }
 
-            Task _ = _sendMessage(new SMPPDeliverSmResp(message.Sequence));
+            _sendMessageAsync(new SMPPDeliverSmResp(message.Sequence));
         }
         private             void                    _recvEnquireLink(SMPPEnquireLink message)
         {
-            Task _ = _sendMessage(new SMPPEnquireLinkResp(message.Sequence));
+            _sendMessageAsync(new SMPPEnquireLinkResp(message.Sequence));
         }
         private async       Task                    _recvUnbind(SMPPUnbind message)
         {
@@ -499,6 +499,17 @@ namespace Jannesen.Protocol.SMPP
                 }
             }
         }
+        private async       void                    _sendMessageAsync(SMPPMessage message)
+        {
+            try {
+                await _sendMessage(message);
+            }
+            catch(Exception err) {
+                if (_isRunning) {
+                    _setFailed(new SMPPException("SendMessage failed.", err));
+                }
+            }
+        }
         private async       Task                    _streamRead(byte[] buf, int offset, int size)
         {
             int     rs;
@@ -517,12 +528,15 @@ namespace Jannesen.Protocol.SMPP
                 if (_tcpClient != null) {
                     try {
                         _tcpClient.Close();
+                        if (_stream != null) { 
+                            _stream.Dispose();
+                        }
                     }
                     catch(Exception err) {
                         Debug.WriteLine("SMPPConnection: close failed: " + err.Message);
                     }
 
-                        _tcpClient = null;
+                    _tcpClient = null;
                     _stream    = null;
                 }
             }
@@ -573,10 +587,6 @@ namespace Jannesen.Protocol.SMPP
                     }
                     catch(Exception) {
                     }
-                }
-
-                lock(this) {
-                    _tcpClient.Close();
                 }
             }
 
