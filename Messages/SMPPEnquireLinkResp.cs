@@ -13,5 +13,9 @@ namespace Jannesen.Protocol.SMPP
         internal                                    SMPPEnquireLinkResp(PduReader reader): base(reader)
         {
         }
+
+        internal    override    void                Serialize(PduWriter writer)
+        {
+        }
     }
 }
