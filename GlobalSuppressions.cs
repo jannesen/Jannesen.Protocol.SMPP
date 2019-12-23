@@ -11,7 +11,6 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Performance",   "CA1819:Properties should not return arrays")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability",   "CA2007:Consider calling ConfigureAwait on the awaited task")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability",   "CA2008:Do not create tasks without passing a TaskScheduler")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style",         "IDE0066:Convert switch statement to expression")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style",         "IDE1006:Naming Styles")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Usage",         "CA2200:Rethrow to preserve stack details.")]
-
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Usage",         "CA2213:Disposable fields should be disposed",  Justification = "<Pending>", Scope = "member", Target = "~F:Jannesen.Protocol.SMPP.SMPPConnection._stream")]
