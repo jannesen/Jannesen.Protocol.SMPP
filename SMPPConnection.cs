@@ -288,28 +288,30 @@ namespace Jannesen.Protocol.SMPP
         }
         public  async       Task                    StopAsync()
         {
+            ConnectionState curState;
+
             lock(this) {
-                if (_state == ConnectionState.Closed)
-                    return;
-
-                if (_state != ConnectionState.Connected)
-                    throw new SMPPException("Not connected.");
-
-                _setState(ConnectionState.Unbinding);
+                if ((curState = _state) != ConnectionState.Connected) {
+                    _setState(ConnectionState.Unbinding);
+                }
             }
 
             try {
-                SMPPMessage response = await _submitMessage(new SMPPUnbind());
+                if (curState == ConnectionState.Unbinding) {
+                    SMPPMessage response = await _submitMessage(new SMPPUnbind());
 
-                if (response.Status != CommandStatus.ESME_ROK)
-                    throw new SMPPException("Response from server " + response.Status + ".");
+                    if (response.Status != CommandStatus.ESME_ROK) { 
+                        throw new SMPPException("Response from server " + response.Status + ".");
+                    }
 
-                _setState(ConnectionState.Stopped);
-                Close();
+                    _setState(ConnectionState.Stopped);
+                }
             }
             catch(Exception err) {
                 throw _setFailed(new SMPPException("Unbind failed.", err));
             }
+
+            Close();
         }
         public              void                    Close()
         {
@@ -546,6 +548,10 @@ namespace Jannesen.Protocol.SMPP
             ConnectionState prevState = ConnectionState.Unknown;
 
             lock(this) {
+                if (_tcpClient == null && newState != ConnectionState.Closed) {
+                    return ;
+                }
+
                 if (_state != newState) {
                     prevState = _state;
                     _state = newState;

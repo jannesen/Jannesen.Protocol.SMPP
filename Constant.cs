@@ -6,7 +6,6 @@ namespace Jannesen.Protocol.SMPP
     {
         Unknown             = -1,
         Closed              = 0,
-        Disconnected,
         Connecting,
         SslHandshake,
         StreamConnected,
