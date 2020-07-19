@@ -65,7 +65,7 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Jannesen.Library.Task\Jannesen.Library.Task.csproj">
+    <ProjectReference Include="..\Jannesen.Library.Task\src\Jannesen.Library.Task.csproj">
       <Project>{b2939f95-88f6-4487-b7e4-acb78074a3bb}</Project>
       <Name>Jannesen.Library.Task</Name>
     </ProjectReference>
