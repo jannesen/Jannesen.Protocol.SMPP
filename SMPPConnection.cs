@@ -34,40 +34,48 @@ namespace Jannesen.Protocol.SMPP
             }
         }
 
-        private class ActiveRequestList: List<ActiveRequest>
+        private class ActiveRequestList
         {
             public          int                 ActiveCount
             {
                 get {
-                    lock(this) {
-                        return base.Count;
+                    lock(_list) {
+                        return _list.Count;
                     }
                 }
             }
             public          bool                isBusy
             {
                 get {
-                    lock(this) {
-                        return base.Count > 0;
+                    lock(_list) {
+                        return _list.Count > 0;
                     }
                 }
             }
+
+            private         List<ActiveRequest> _list;
+
 
             public          ActiveRequest       AddMessage(SMPPMessage message)
             {
                 ActiveRequest   sendingMessage = new ActiveRequest(message);
 
-                lock(this) {
-                    base.Add(sendingMessage);
+                lock(_list) {
+                    _list.Add(sendingMessage);
                 }
 
                 return sendingMessage;
             }
 
+            public                              ActiveRequestList()
+            {
+                _list = new List<ActiveRequest>();
+            }
+
             public          void                CompleteError(ActiveRequest sendingMessage, Exception err)
             {
-                lock(this) {
-                    base.Remove(sendingMessage);
+                lock(_list) {
+                    _list.Remove(sendingMessage);
                 }
 
                 sendingMessage.TaskCompletion.TrySetException(err);
@@ -76,10 +84,10 @@ namespace Jannesen.Protocol.SMPP
             {
                 ActiveRequest sendingMessage;
 
-                lock(this) {
+                lock(_list) {
                     int     idx = _findMessage(message);
-                    sendingMessage = base[idx];
-                    base.RemoveAt(idx);
+                    sendingMessage = _list[idx];
+                    _list.RemoveAt(idx);
                 }
 
                 sendingMessage.TaskCompletion.SetResult(message);
@@ -88,13 +96,13 @@ namespace Jannesen.Protocol.SMPP
             {
                 List<ActiveRequest> timeoutMessages = new List<ActiveRequest>();
 
-                lock(this) {
-                    for (int i = 0 ; i < base.Count ; ++i) {
-                        if (--base[i].TimeoutTicks <= 0) {
+                lock(_list) {
+                    for (int i = 0 ; i < _list.Count ; ++i) {
+                        if (--(_list[i].TimeoutTicks) <= 0) {
                             if (timeoutMessages == null)
                                 timeoutMessages = new List<ActiveRequest>();
 
-                            timeoutMessages.Add(base[i]);
+                            timeoutMessages.Add(_list[i]);
                         }
                     }
                 }
@@ -106,15 +114,21 @@ namespace Jannesen.Protocol.SMPP
             }
             public          void                ConnectionDown()
             {
-                while (base.Count > 0)
-                    CompleteError(base[0], new SMPPException("Connection down."));
+                lock(_list) { 
+                    while (_list.Count > 0) {
+                        var msg = _list[0];
+                        _list.RemoveAt(0);
+                    
+                        CompleteError(msg, new SMPPException("Connection down."));
+                    }
+                }
             }
 
             private         int                 _findMessage(SMPPMessage message)
             {
-                for (int i = 0 ; i < base.Count ; ++i) {
-                    if (base[i].Message.Sequence == message.Sequence &&
-                        (base[i].Message.Command  == (message.Command & ~CommandSet.Response) || message.Command == CommandSet.GenericNack))
+                for (int i = 0 ; i < _list.Count ; ++i) {
+                    if (_list[i].Message.Sequence == message.Sequence &&
+                        (_list[i].Message.Command  == (message.Command & ~CommandSet.Response) || message.Command == CommandSet.GenericNack))
                         return i;
                 }
 
@@ -297,20 +311,27 @@ namespace Jannesen.Protocol.SMPP
             }
 
             try {
-                if (curState == ConnectionState.Unbinding) {
+                if (curState == ConnectionState.Connected) {
                     SMPPMessage response = await _submitMessage(new SMPPUnbind());
 
                     if (response.Status != CommandStatus.ESME_ROK) { 
                         throw new SMPPException("Response from server " + response.Status + ".");
                     }
-
-                    _setState(ConnectionState.Stopped);
                 }
             }
             catch(Exception err) {
                 throw _setFailed(new SMPPException("Unbind failed.", err));
             }
 
+            // Wait until read has finished.
+            for (int i = 0 ; i < 100 ; ++i) {
+                if (_state == ConnectionState.Closed) {
+                    return;
+                }
+                await Task.Delay(25);
+            }
+
+            // Force close
             Close();
         }
         public              void                    Close()
@@ -349,8 +370,12 @@ namespace Jannesen.Protocol.SMPP
                         case CommandSet.BindTransmitterResp:
                         case CommandSet.SubmitSmResp:
                         case CommandSet.EnquireLinkResp:
+                            _activeRequests.CompleteResp(message);
+                            break;
+
                         case CommandSet.UnbindResp:
                             _activeRequests.CompleteResp(message);
+                            _setState(ConnectionState.Stopped);
                             break;
 
                         default: throw new NotImplementedException("No handler for " + message.Command);
@@ -362,9 +387,8 @@ namespace Jannesen.Protocol.SMPP
                 if (_isRunning) {
                     _setFailed(err);
                 }
-
-                _activeRequests.ConnectionDown();
             }
+            Close();
         }
         private             void                    _poll(object state)
         {
@@ -415,8 +439,8 @@ namespace Jannesen.Protocol.SMPP
         private async       Task                    _recvUnbind(SMPPUnbind message)
         {
             await _sendMessage(new SMPPUnbindResp(message.Sequence));
-            _state = ConnectionState.Stopped;
-            await Task.Delay(250);
+            await Task.Delay(1000);
+            throw new SMPPException("UNBind received from remote.");
         }
         private             Task<SMPPMessage>       _submitMessage(SMPPMessage message)
         {
