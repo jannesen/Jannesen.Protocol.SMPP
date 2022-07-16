@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29123.88
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jannesen.Protocol.SMPP", "Jannesen.Protocol.SMPP.csproj", "{C4B9E242-2CEB-492F-82FC-4C33711A5C94}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jannesen.Library.Task", "..\Jannesen.Library.Task\Jannesen.Library.Task.csproj", "{B2939F95-88F6-4487-B7E4-ACB78074A3BB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jannesen.Library.Task", "..\Jannesen.Library.Task\src\Jannesen.Library.Task.csproj", "{B2939F95-88F6-4487-B7E4-ACB78074A3BB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -9,10 +9,10 @@ namespace Jannesen.Protocol.SMPP
         public                  CommandStatus   Status          { get; set; }
         public                  UInt32          Sequence        { get; set; }
 
-        public                                  SMPPMessage()
+        protected                               SMPPMessage()
         {
         }
-        public                                  SMPPMessage(UInt32 sequence)
+        protected                               SMPPMessage(UInt32 sequence)
         {
             Sequence = sequence;
         }
