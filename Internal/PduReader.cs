@@ -2,7 +2,7 @@
 
 namespace Jannesen.Protocol.SMPP.Internal
 {
-    internal class PduReader
+    internal sealed class PduReader
     {
         private readonly    byte[]          _data;
         private readonly    int             _length;

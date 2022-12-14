@@ -19,7 +19,7 @@ namespace Jannesen.Protocol.SMPP
 
         private const   int EnquirePoll         = 60;
 
-        private class ActiveRequest
+        private sealed class ActiveRequest
         {
             public      SMPPMessage                         Message         { get; set; }
             public      Task                                SendTask        { get; set; }
@@ -34,7 +34,7 @@ namespace Jannesen.Protocol.SMPP
             }
         }
 
-        private class ActiveRequestList
+        private sealed class ActiveRequestList
         {
             public          int                 ActiveCount
             {

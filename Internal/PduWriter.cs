@@ -2,7 +2,7 @@
 
 namespace Jannesen.Protocol.SMPP.Internal
 {
-    internal class PduWriter
+    internal sealed class PduWriter
     {
         private             byte[]      _data;
         private             int         _offset;
