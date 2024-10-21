@@ -14,12 +14,6 @@ dotnet_diagnostic.IDE1006.severity = none
 # CA1008: Enums should have zero value
 dotnet_diagnostic.CA1008.severity = none
 
-# CA1012: Abstract types should not have public constructors
-dotnet_diagnostic.CA1012.severity = none
-
-# CA1014: Mark assemblies with CLSCompliant
-dotnet_diagnostic.CA1014.severity = none
-
 # CA1028: Enum Storage should be Int32
 dotnet_diagnostic.CA1028.severity = none
 
@@ -38,9 +32,6 @@ dotnet_diagnostic.CA1056.severity = none
 # CA1069: Enums values should not be duplicated
 dotnet_diagnostic.CA1069.severity = none
 
-# CA1508: 'timeoutMessages == null' is always 'false'. Remove or refactor the condition(s) to avoid dead code.
-dotnet_diagnostic.CA1508.severity = none
-
 # CA1707: Identifiers should not contain underscores
 dotnet_diagnostic.CA1707.severity = none
 
@@ -58,6 +49,3 @@ dotnet_diagnostic.CA2007.severity = none
 
 # CA2008: Do not create tasks without passing a TaskScheduler
 dotnet_diagnostic.CA2008.severity = none
-
-# CA2213: 'SMPPConnection' contains field '_tcpClient' that is of IDisposable type 'TcpClient', but it is never disposed. Change the Dispose method on 'SMPPConnection' to call Close or Dispose on this field.
-dotnet_diagnostic.CA2213.severity = none

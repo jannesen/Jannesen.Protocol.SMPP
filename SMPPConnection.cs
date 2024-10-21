@@ -94,13 +94,14 @@ namespace Jannesen.Protocol.SMPP
             }
             public          void                TimeoutPoll()
             {
-                List<ActiveRequest> timeoutMessages = new List<ActiveRequest>();
+                List<ActiveRequest> timeoutMessages = null;
 
                 lock(_list) {
                     for (int i = 0 ; i < _list.Count ; ++i) {
                         if (--(_list[i].TimeoutTicks) <= 0) {
-                            if (timeoutMessages == null)
+                            if (timeoutMessages == null) {
                                 timeoutMessages = new List<ActiveRequest>();
+                            }
 
                             timeoutMessages.Add(_list[i]);
                         }
@@ -518,7 +519,7 @@ namespace Jannesen.Protocol.SMPP
                 Debug.WriteLine("SMPPConnection: SendMessage size=" + pduData.Length + " id=" + message.Command + " status=" + message.Status + " seq=" + message.Sequence);
 #endif
                 try {
-                    await _stream.WriteAsync(pduData, 0, pduData.Length);
+                    await _stream.WriteAsync(new ReadOnlyMemory<byte>(pduData, 0, pduData.Length));
                 }
                 catch(Exception err) {
                     throw _setFailed(new SMPPException("Send data to SMPP server failed", err));
@@ -540,7 +541,7 @@ namespace Jannesen.Protocol.SMPP
         {
             int     rs;
 
-            while (size > 0 && (rs = await _stream.ReadAsync(buf, offset, size)) > 0) {
+            while (size > 0 && (rs = await _stream.ReadAsync(new Memory<byte>(buf, offset, size))) > 0) {
                 offset += rs;
                 size   -= rs;
             }

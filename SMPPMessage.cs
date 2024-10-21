@@ -39,21 +39,21 @@ namespace Jannesen.Protocol.SMPP
                 return _optional;
             }
         }
-        public                  bool            hasOptional
+        public                  bool                hasOptional
         {
             get {
                 return _optional != null;
             }
         }
 
-        public                                  SMPPMessageWithOptional()
+        protected                                   SMPPMessageWithOptional()
         {
         }
-        internal                                SMPPMessageWithOptional(PduReader reader): base(reader)
+        internal                                    SMPPMessageWithOptional(PduReader reader): base(reader)
         {
         }
 
-        internal                void            ReadOptional(PduReader reader)
+        internal                void                ReadOptional(PduReader reader)
         {
             while (reader.SizeLeft > 0)
                 Optional.Add(new SMPPTLV(reader));
