@@ -114,11 +114,11 @@ namespace Jannesen.Protocol.SMPP
             }
             public          void                ConnectionDown()
             {
-                lock(_list) { 
+                lock(_list) {
                     while (_list.Count > 0) {
                         var msg = _list[0];
                         _list.RemoveAt(0);
-                    
+
                         CompleteError(msg, new SMPPException("Connection down."));
                     }
                 }
@@ -314,7 +314,7 @@ namespace Jannesen.Protocol.SMPP
                 if (curState == ConnectionState.Connected) {
                     SMPPMessage response = await _submitMessage(new SMPPUnbind());
 
-                    if (response.Status != CommandStatus.ESME_ROK) { 
+                    if (response.Status != CommandStatus.ESME_ROK) {
                         throw new SMPPException("Response from server " + response.Status + ".");
                     }
                 }
@@ -554,7 +554,7 @@ namespace Jannesen.Protocol.SMPP
                 if (_tcpClient != null) {
                     try {
                         _tcpClient.Close();
-                        if (_stream != null) { 
+                        if (_stream != null) {
                             _stream.Dispose();
                         }
                     }

@@ -1,4 +1,4 @@
-﻿# Jannesen.Protocol.SMPP
+# Jannesen.Protocol.SMPP
 
 This library implements a basis Short Message Peer-to-Peer protocol. It only implements sending SMS messages and receiving delivery reports.
 
@@ -25,6 +25,6 @@ The library is completly async.
 
 | name         | description
 |:-------------|:-------
-| ConnectAsync | Connect to SMPP gateway 
+| ConnectAsync | Connect to SMPP gateway
 | StopAsync    | Stop (gracefully)
 | Close        | Close the connection immediately and release all resources.
