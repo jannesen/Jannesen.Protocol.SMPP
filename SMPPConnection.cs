@@ -36,7 +36,7 @@ namespace Jannesen.Protocol.SMPP
 
         private sealed class ActiveRequestList
         {
-            public          int                 ActiveCount
+            public              int                 ActiveCount
             {
                 get {
                     lock(_list) {
@@ -44,7 +44,7 @@ namespace Jannesen.Protocol.SMPP
                     }
                 }
             }
-            public          bool                isBusy
+            public              bool                isBusy
             {
                 get {
                     lock(_list) {
@@ -53,12 +53,12 @@ namespace Jannesen.Protocol.SMPP
                 }
             }
 
-            private         List<ActiveRequest> _list;
+            private readonly    List<ActiveRequest> _list;
 
 
-            public          ActiveRequest       AddMessage(SMPPMessage message)
+            public              ActiveRequest       AddMessage(SMPPMessage message)
             {
-                ActiveRequest   sendingMessage = new ActiveRequest(message);
+                var sendingMessage = new ActiveRequest(message);
 
                 lock(_list) {
                     _list.Add(sendingMessage);
@@ -67,12 +67,12 @@ namespace Jannesen.Protocol.SMPP
                 return sendingMessage;
             }
 
-            public                              ActiveRequestList()
+            public                                  ActiveRequestList()
             {
                 _list = new List<ActiveRequest>();
             }
 
-            public          void                CompleteError(ActiveRequest sendingMessage, Exception err)
+            public              void                CompleteError(ActiveRequest sendingMessage, Exception err)
             {
                 lock(_list) {
                     _list.Remove(sendingMessage);
@@ -80,7 +80,7 @@ namespace Jannesen.Protocol.SMPP
 
                 sendingMessage.TaskCompletion.TrySetException(err);
             }
-            public          void                CompleteResp(SMPPMessage message)
+            public              void                CompleteResp(SMPPMessage message)
             {
                 ActiveRequest sendingMessage;
 
@@ -92,7 +92,7 @@ namespace Jannesen.Protocol.SMPP
 
                 sendingMessage.TaskCompletion.SetResult(message);
             }
-            public          void                TimeoutPoll()
+            public              void                TimeoutPoll()
             {
                 List<ActiveRequest> timeoutMessages = null;
 
@@ -113,7 +113,7 @@ namespace Jannesen.Protocol.SMPP
                         CompleteError(m, new TimeoutException("Timeout"));
                 }
             }
-            public          void                ConnectionDown()
+            public              void                ConnectionDown()
             {
                 lock(_list) {
                     while (_list.Count > 0) {
@@ -125,7 +125,7 @@ namespace Jannesen.Protocol.SMPP
                 }
             }
 
-            private         int                 _findMessage(SMPPMessage message)
+            private             int                 _findMessage(SMPPMessage message)
             {
                 for (int i = 0 ; i < _list.Count ; ++i) {
                     if (_list[i].Message.Sequence == message.Sequence &&
@@ -147,7 +147,7 @@ namespace Jannesen.Protocol.SMPP
                 return (Tls ? "smpps://" : "smpp://") + Hostname + ":" + Port.ToString(CultureInfo.InvariantCulture);
             }
             set {
-                Uri url = new Uri(value);
+                var url = new Uri(value);
 
                 switch(url.Scheme) {
                 case "smpp":    Tls = false;    Port = 2775;    break;
@@ -246,7 +246,7 @@ namespace Jannesen.Protocol.SMPP
 
                     if (Tls) {
                         _setState(ConnectionState.SslHandshake);
-                        SslStream   sslStream = new SslStream(stream, true);
+                        var sslStream = new SslStream(stream, true);
                         await sslStream.AuthenticateAsClientAsync(Hostname);
                         stream = sslStream;
                     }
@@ -418,9 +418,7 @@ namespace Jannesen.Protocol.SMPP
                 lock(this) {
                     if (_state == ConnectionState.Connected) {
                         _setFailed(new SMPPException("EnquireLink failed", err));
-
-                        if (_tcpClient != null)
-                            _tcpClient.Client.Close();
+                        _tcpClient?.Client.Close();
                     }
                 }
             }
@@ -471,7 +469,7 @@ namespace Jannesen.Protocol.SMPP
                 await _streamRead(buf, 16, (int)commandLength - 16);
             }
 
-            PduReader   pduReader = new PduReader(buf);
+            var pduReader = new PduReader(buf);
 #if DEBUG
             Debug.WriteLine("SMPPConnection: RecvMessage size=" + pduReader.CommandLength + " id=" + pduReader.CommandId + " status=" + pduReader.CommandStatus + " seq=" + pduReader.CommandSequence);
 #endif
@@ -503,7 +501,7 @@ namespace Jannesen.Protocol.SMPP
                 if (!_isRunning)
                     throw new SMPPException("Connection is down.");
 
-                PduWriter writer = new PduWriter();
+                var writer = new PduWriter();
 
                 if ((message.Command & CommandSet.Response) == 0) {
                     lock(this) {
@@ -555,9 +553,7 @@ namespace Jannesen.Protocol.SMPP
                 if (_tcpClient != null) {
                     try {
                         _tcpClient.Close();
-                        if (_stream != null) {
-                            _stream.Dispose();
-                        }
+                        _stream?.Dispose();
                     }
                     catch(Exception err) {
                         Debug.WriteLine("SMPPConnection: close failed: " + err.Message);

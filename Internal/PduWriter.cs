@@ -15,12 +15,12 @@ namespace Jannesen.Protocol.SMPP.Internal
 
         public              void        WriteMessage(SMPPMessage message)
         {
-            WriteHeader         (message);
+            WriteHeader(message);
 
             message.Serialize(this);
 
-            if (message is SMPPMessageWithOptional && ((SMPPMessageWithOptional)message).hasOptional)
-                WriteOptional       (((SMPPMessageWithOptional)message).Optional);
+            if (message is SMPPMessageWithOptional smmpMessageWithOptional && smmpMessageWithOptional.hasOptional)
+                WriteOptional(smmpMessageWithOptional.Optional);
         }
 
         public              void        WriteByte(byte value)
