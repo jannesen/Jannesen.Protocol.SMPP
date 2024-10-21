@@ -85,7 +85,7 @@ namespace Jannesen.Protocol.SMPP
                 ActiveRequest sendingMessage;
 
                 lock(_list) {
-                    int     idx = _findMessage(message);
+                    var idx = _findMessage(message);
                     sendingMessage = _list[idx];
                     _list.RemoveAt(idx);
                 }
@@ -97,7 +97,7 @@ namespace Jannesen.Protocol.SMPP
                 List<ActiveRequest> timeoutMessages = null;
 
                 lock(_list) {
-                    for (int i = 0 ; i < _list.Count ; ++i) {
+                    for (var i = 0 ; i < _list.Count ; ++i) {
                         if (--(_list[i].TimeoutTicks) <= 0) {
                             if (timeoutMessages == null) {
                                 timeoutMessages = new List<ActiveRequest>();
@@ -109,7 +109,7 @@ namespace Jannesen.Protocol.SMPP
                 }
 
                 if (timeoutMessages != null) {
-                    foreach(ActiveRequest m in timeoutMessages)
+                    foreach(var m in timeoutMessages)
                         CompleteError(m, new TimeoutException("Timeout"));
                 }
             }
@@ -127,7 +127,7 @@ namespace Jannesen.Protocol.SMPP
 
             private             int                 _findMessage(SMPPMessage message)
             {
-                for (int i = 0 ; i < _list.Count ; ++i) {
+                for (var i = 0 ; i < _list.Count ; ++i) {
                     if (_list[i].Message.Sequence == message.Sequence &&
                         (_list[i].Message.Command  == (message.Command & ~CommandSet.Response) || message.Command == CommandSet.GenericNack))
                         return i;
@@ -277,12 +277,12 @@ namespace Jannesen.Protocol.SMPP
             }
 
             // Start comtask
-            Task _ = _run();
+            var _ = _run();
 
             // Bind
             try {
                 _setState(ConnectionState.Binding);
-                SMPPMessage response = await _submitMessage(Bind);
+                var response = await _submitMessage(Bind);
 
                 if (response.Status != CommandStatus.ESME_ROK)
                     throw new SMPPException("Response from server " + response.Status + ".");
@@ -313,7 +313,7 @@ namespace Jannesen.Protocol.SMPP
 
             try {
                 if (curState == ConnectionState.Connected) {
-                    SMPPMessage response = await _submitMessage(new SMPPUnbind());
+                    var response = await _submitMessage(new SMPPUnbind());
 
                     if (response.Status != CommandStatus.ESME_ROK) {
                         throw new SMPPException("Response from server " + response.Status + ".");
@@ -325,7 +325,7 @@ namespace Jannesen.Protocol.SMPP
             }
 
             // Wait until read has finished.
-            for (int i = 0 ; i < 100 ; ++i) {
+            for (var i = 0 ; i < 100 ; ++i) {
                 if (_state == ConnectionState.Closed) {
                     return;
                 }
@@ -350,7 +350,7 @@ namespace Jannesen.Protocol.SMPP
 
                 using (new System.Threading.Timer(_poll, null, 1000, 1000)) {
                     while (_isRunning) {
-                        SMPPMessage message = await _recvMessage();
+                        var message = await _recvMessage();
 
                         switch (message.Command) {
                         case CommandSet.EnquireLink:
@@ -406,7 +406,7 @@ namespace Jannesen.Protocol.SMPP
         {
             try {
                 if (_state == ConnectionState.Connected) {
-                    SMPPMessage response = await _submitMessage(new SMPPEnquireLink());
+                    var response = await _submitMessage(new SMPPEnquireLink());
 
                     if (response.Status != CommandStatus.ESME_ROK)
                         throw new SMPPException("Response from server " + response.Status + ".");
@@ -443,7 +443,7 @@ namespace Jannesen.Protocol.SMPP
         }
         private             Task<SMPPMessage>       _submitMessage(SMPPMessage message)
         {
-            ActiveRequest   sendingMessage = _activeRequests.AddMessage(message);
+            var sendingMessage = _activeRequests.AddMessage(message);
 
             sendingMessage.SendTask = _sendMessage(message);
             sendingMessage.SendTask.ContinueWith((task) =>
@@ -455,11 +455,11 @@ namespace Jannesen.Protocol.SMPP
         }
         private async       Task<SMPPMessage>       _recvMessage()
         {
-            byte[]  buf = new byte[16];
+            var buf = new byte[16];
 
             await _streamRead(buf, 0, buf.Length);
 
-            UInt32      commandLength = PduReader.ParseInteger(buf, 0);
+            var commandLength = PduReader.ParseInteger(buf, 0);
 
             if (commandLength < 16 || commandLength > (1 << 18))
                 throw new SMPPException("Invalid command_length " + commandLength + "received.");
@@ -512,7 +512,7 @@ namespace Jannesen.Protocol.SMPP
 
                 writer.WriteMessage(message);
 
-                byte[]  pduData = writer.PduData();
+                var pduData = writer.PduData();
 #if DEBUG
                 Debug.WriteLine("SMPPConnection: SendMessage size=" + pduData.Length + " id=" + message.Command + " status=" + message.Status + " seq=" + message.Sequence);
 #endif
@@ -566,7 +566,7 @@ namespace Jannesen.Protocol.SMPP
         }
         private             void                    _setState(ConnectionState newState)
         {
-            ConnectionState prevState = ConnectionState.Unknown;
+            var prevState = ConnectionState.Unknown;
 
             lock(this) {
                 if (_tcpClient == null && newState != ConnectionState.Closed) {
@@ -594,7 +594,7 @@ namespace Jannesen.Protocol.SMPP
         }
         private             Exception               _setFailed(Exception err)
         {
-            ConnectionState prevState = ConnectionState.Unknown;
+            var prevState = ConnectionState.Unknown;
 
             lock(this) {
                 if (_state != ConnectionState.Failed) {

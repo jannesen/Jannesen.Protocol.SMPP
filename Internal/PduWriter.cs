@@ -56,7 +56,7 @@ namespace Jannesen.Protocol.SMPP.Internal
                 if (value.Length < minLength || value.Length > maxLength)
                     throw new ArgumentException("Invalid string length.");
 
-                byte[]  b = System.Text.ASCIIEncoding.ASCII.GetBytes(value);
+                var b = System.Text.ASCIIEncoding.ASCII.GetBytes(value);
 
                 _requireSize(b.Length + 1);
                 Array.Copy(b, 0, _data, _offset, b.Length);
@@ -79,7 +79,7 @@ namespace Jannesen.Protocol.SMPP.Internal
         }
         public              void        WriteOptional(SMPPTLVCollection tlvCollection)
         {
-            foreach(SMPPTLV tlv in tlvCollection) {
+            foreach(var tlv in tlvCollection) {
                 WriteInteger16((UInt16)tlv.Tag);
 
                 if (tlv.Value != null) {

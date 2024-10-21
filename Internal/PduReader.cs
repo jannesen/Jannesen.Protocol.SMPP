@@ -52,8 +52,8 @@ namespace Jannesen.Protocol.SMPP.Internal
         }
         public              UInt16          ReadInteger16()
         {
-            UInt16  v =  (UInt16)((_data[_offset + 0] <<  8) |
-                                  (_data[_offset + 1]      ));
+            var v = (UInt16)((_data[_offset + 0] <<  8) |
+                             (_data[_offset + 1]      ));
 
             _offset += 2;
 
@@ -61,7 +61,7 @@ namespace Jannesen.Protocol.SMPP.Internal
         }
         public              UInt32          ReadInteger32()
         {
-            UInt32  v = ParseInteger(_data, _offset);
+            var v = ParseInteger(_data, _offset);
 
             _offset += 4;
 
@@ -69,7 +69,7 @@ namespace Jannesen.Protocol.SMPP.Internal
         }
         public              byte[]          ReadBytes(int size)
         {
-            byte[]  rtn = new byte[size];
+            var rtn = new byte[size];
 
             Array.Copy(_data, _offset, rtn, 0, size);
             _offset += size;
@@ -78,12 +78,12 @@ namespace Jannesen.Protocol.SMPP.Internal
         }
         public              string          ReadCStringAscii()
         {
-            int pos = _offset;
+            var pos = _offset;
 
             while (pos < _data.Length && _data[pos] != 0)
                 ++pos;
 
-            string s = System.Text.ASCIIEncoding.ASCII.GetString(_data, _offset, pos - _offset);
+            var s = System.Text.ASCIIEncoding.ASCII.GetString(_data, _offset, pos - _offset);
 
             _offset = pos + 1;
 

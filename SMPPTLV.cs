@@ -55,7 +55,7 @@ namespace Jannesen.Protocol.SMPP
         public          string          ValueString
         {
             get {
-                int     size = Value.Length;
+                var size = Value.Length;
 
                 if (size > 0 && Value[size - 1] == 0)
                     --size;
@@ -83,7 +83,7 @@ namespace Jannesen.Protocol.SMPP
         public          SMPPTLV         this[OptionalTags tag]
         {
             get {
-                SMPPTLV tlv = Find(tag);
+                var tlv = Find(tag);
 
                 if (tlv == null)
                     base.Add(tlv = new SMPPTLV(tag));
@@ -143,7 +143,7 @@ namespace Jannesen.Protocol.SMPP
 
         private         SMPPTLV         Find(OptionalTags tag)
         {
-            for(int i = 0 ; i < base.Count ; ++i) {
+            for(var i = 0 ; i < base.Count ; ++i) {
                 if (base[i].Tag == tag)
                     return base[i];
             }
@@ -152,29 +152,29 @@ namespace Jannesen.Protocol.SMPP
         }
         private         void            Remove(OptionalTags tag)
         {
-            for(int i = 0 ; i < base.Count ; ++i) {
+            for(var i = 0 ; i < base.Count ; ++i) {
                 if (base[i].Tag == tag)
                     base.RemoveAt(i);
             }
         }
         private         bool            _getBool(OptionalTags tag)
         {
-            SMPPTLV tlv = Find(tag);
+            var tlv = Find(tag);
             return (tlv != null);
         }
         private         byte?           _getByte(OptionalTags tag)
         {
-            SMPPTLV tlv = Find(tag);
+            var tlv = Find(tag);
             return (tlv != null) ? (byte?)tlv.ValueByte : (byte?)null;
         }
         private         UInt16?         _getUInt16(OptionalTags tag)
         {
-            SMPPTLV tlv = Find(tag);
+            var tlv = Find(tag);
             return (tlv != null) ? (UInt16?)tlv.ValueUInt16 : (UInt16?)null;
         }
         private         UInt32?         _getUInt32(OptionalTags tag)
         {
-            SMPPTLV tlv = Find(tag);
+            var tlv = Find(tag);
             return (tlv != null) ? (UInt32?)tlv.ValueUInt32 : (UInt32?)null;
         }
         private         string          _getString(OptionalTags tag)
