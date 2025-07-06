@@ -2,7 +2,7 @@
     <PropertyGroup>
         <RootNamespace>Jannesen.Protocol.SMPP</RootNamespace>
         <AssemblyName>Jannesen.Protocol.SMPP</AssemblyName>
-        
+
         <OutputType>Library</OutputType>
         <TargetFramework>net9</TargetFramework>
         <InvariantGlobalization>true</InvariantGlobalization>
