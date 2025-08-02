@@ -228,7 +228,7 @@ namespace Jannesen.Protocol.SMPP
             try {
                 Stream      stream;
 
-                using (new System.Threading.Timer((object state) =>
+                using (new System.Threading.Timer((state) =>
                                                     {
                                                         lock(this) {
                                                             if (_state == ConnectionState.Connecting || _state == ConnectionState.SslHandshake) {
@@ -555,9 +555,14 @@ namespace Jannesen.Protocol.SMPP
                         _tcpClient.Close();
                         _stream?.Dispose();
                     }
+#if DEBUG
                     catch(Exception err) {
                         Debug.WriteLine("SMPPConnection: close failed: " + err.Message);
                     }
+#else
+                    catch {
+                    }
+#endif
 
                     _tcpClient = null;
                     _stream    = null;
