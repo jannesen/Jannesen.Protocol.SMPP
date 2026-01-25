@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="../Jannesen.Library.Task/src/Jannesen.Library.Task.csproj" />
+  <Project Path="Jannesen.Protocol.SMPP.csproj" />
+</Solution>
