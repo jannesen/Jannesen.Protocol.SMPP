@@ -12,8 +12,7 @@
 
         <IsTrimmable>True</IsTrimmable>
         <IsAotCompatible>True</IsAotCompatible>
-        <SignAssembly>True</SignAssembly>
-        <AssemblyOriginatorKeyFile>Jannesen.Protocol.SMPP.snk</AssemblyOriginatorKeyFile>
+
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 
         <Company>Jannesen B.V.</Company>
