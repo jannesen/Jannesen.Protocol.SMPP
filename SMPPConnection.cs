@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Net.Sockets;
 using System.Net.Security;
-using System.Diagnostics;
-using System.Threading;
 using System.Threading.Tasks;
 using Jannesen.Library.Tasks;
 using Jannesen.Protocol.SMPP.Internal;
